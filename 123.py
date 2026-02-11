@@ -331,7 +331,7 @@ if 0 < st.session_state.affection < 100:
         st.title("你 被 骗 了 ! ! !")
         st.markdown("走流程还是自己吃？https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=03866106963f94515a9608a07c42a978")
         if st.button("入口传送门"):
-            play_audio("./audio/lemon.mp3",custom_volume=0.5)
+            play_audio("./audio/lemon.mp3",custom_volume=0.6)
             st.markdown("自己刷新？")
 
     # ========== 7. Ciallo彩蛋按钮 + 停止彩蛋音效 ==========
