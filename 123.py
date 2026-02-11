@@ -48,13 +48,13 @@ if st.session_state.current_step1 != 1:
     st.caption(f"当前好感度：{st.session_state.affection}/100")
     # 好感度状态提示（可选，增强体验）
     if st.session_state.affection >= 80:
-        st.success("✨ 丛雨超喜欢你！")
+        st.success("✨ 丛雨想0721了！")
     elif st.session_state.affection >= 50:
-        st.info("😊 丛雨对你有好感~")
+        st.info("😊 丛雨觉得你风韵犹存~")
     elif st.session_state.affection >= 20:
-        st.warning("😐 丛雨有点小情绪...")
+        st.warning("😐 丛雨不高兴，后果很严重...")
     else:
-        st.error("💢 丛雨超生气！")
+        st.error("💢 丛雨即将降下神罚！")
 
 # ========== 4. 核心：多音频播放+停止框架（不变） ==========
 def sound_to_base64(sound_path):
@@ -212,7 +212,7 @@ if 0 < st.session_state.affection < 100:
             st.session_state.current_step = 2.1
             st.rerun()
         # 拒绝：好感度-15（下限0）
-        elif st.button("不要!!!"):
+        elif st.button("我也要摸吗？"):
             st.session_state.affection = max(st.session_state.affection - 15, 0)
             st.session_state.current_step = 2.2
             st.rerun()
@@ -220,17 +220,18 @@ if 0 < st.session_state.affection < 100:
     # 步骤2.1：摸头分支（新增好感度变化）
     elif st.session_state.current_step == 2.1:
         st.image("./image/murasame5.webp", width=300, caption="狗修金？")
+        st.write("我去，摸头起手？你高低是个三千！")
         stop_audio("./audio/Murasame2.mp3")
         stop_audio("./audio/Murasame3.mp3")
         stop_audio("./audio/Murasame4.mp3")
         play_audio("./audio/Murasame1.mp3")
         # 继续摸：好感度+8
-        if st.button("继续摸"):
+        if st.button("嘿嘿，幼刀酱~继续摸"):
             st.session_state.affection = min(st.session_state.affection + 8, 100)
             st.session_state.current_step = 3
             st.rerun()
         # 不摸了：好感度-5
-        elif st.button("不摸了,寸止"):
+        elif st.button("我好像踩到地雷了，寸止！"):
             st.session_state.affection = max(st.session_state.affection - 5, 0)
             st.session_state.current_step = 2.2
             st.rerun()
@@ -242,21 +243,34 @@ if 0 < st.session_state.affection < 100:
         stop_audio("./audio/Murasame3.mp3")
         stop_audio("./audio/Murasame4.mp3")
         play_audio("./audio/Murasame2.mp3")
+        st.write("屏幕前的各位觉得我能活下来吗？")
         # 时间回溯：好感度-8
         if st.button("吓我一跳,释放时间回溯忍术！"):
             st.session_state.affection = max(st.session_state.affection - 10, 0)
             st.session_state.current_step = 1
             st.rerun()
         # 妥协摸头：好感度+5
-        elif st.button("被幼刀吓哭了，那只能摸了😭😭😭"):
+        elif st.button("幼刀是个纯小子，那只能摸头了😭😭😭"):
             st.session_state.affection = min(st.session_state.affection + 5, 100)
             st.session_state.current_step = 2.1
             st.rerun()
         # 坚持不摸：好感度-20
-        elif st.button("不、不摸...那咋啦？"):
+        elif st.button("区区太平公主，我避她锋芒？"):
             st.session_state.affection = max(st.session_state.affection - 20, 0)
             st.session_state.current_step = -1
             st.rerun()
+        elif st.button("666还有互动环节"):
+            components.html("""
+                        <script>
+                            // 打开B站指定页面（可替换为任意B站链接）
+                            window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=03866106963f94515a9608a07c42a978", "_blank");
+                        </script>
+                        """, height=0)
+            st.session_state.current_step = 114514
+            st.session_state.affection = 78
+            st.rerun()
+
+
 
     # 步骤3：继续摸头分支（新增好感度变化）
     elif st.session_state.current_step == 3:
@@ -282,6 +296,7 @@ if 0 < st.session_state.affection < 100:
         pause_all_audio()
         play_audio("./audio/Murasame4.mp3")
         play_audio("./audio/man.mp3")
+        st.write("我嘞个不摸")
         st.markdown("丛雨吃掉了你的手指！<br>游戏结束！", unsafe_allow_html=True)
         st.image("./image/murasame4.webp", width=300, caption="豪赤😋！！！")
         st.image("./image/murasame1.jpg",width=300,caption="啧，果然是小雑魚~" )
