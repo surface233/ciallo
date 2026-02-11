@@ -48,11 +48,11 @@ if st.session_state.current_step1 != 1:
     st.caption(f"当前好感度：{st.session_state.affection}/100")
     # 好感度状态提示（可选，增强体验）
     if st.session_state.affection >= 80:
-        st.success("✨ 丛雨想0721了！")
+        st.success("✨ 丛雨甚至想0721了！")
     elif st.session_state.affection >= 50:
         st.info("😊 丛雨觉得你风韵犹存~")
     elif st.session_state.affection >= 20:
-        st.warning("😐 丛雨不高兴，后果很严重...")
+        st.warning("😐 丛雨正在准备铁拳...")
     else:
         st.error("💢 丛雨即将降下神罚！")
 
@@ -346,7 +346,7 @@ elif st.session_state.affection == 100:
     st.write("丛雨被你攻略了！请你吃丛雨丸😋")
     pause_all_audio()
     play_audio("./audio/Murasame3.mp3")
-    st.image("./image/Murasame8.jpg",width = 300, caption = "嘿嘿，狗修金~")
+    st.image("./image/Murasame8.png",width = 300, caption = "嘿嘿，狗修金~")
 
     if st.button("666还有第二关"):
         st.session_state.current_step = 1
