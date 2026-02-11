@@ -296,8 +296,9 @@ if 0 < st.session_state.affection < 100:
         pause_all_audio()
         play_audio("./audio/Murasame4.mp3")
         play_audio("./audio/man.mp3")
+        st.title("丛雨吃掉了你的手指！", unsafe_allow_html=True)
+        st.title("游戏结束！")
         st.write("我嘞个不摸")
-        st.markdown("丛雨吃掉了你的手指！<br>游戏结束！", unsafe_allow_html=True)
         st.image("./image/murasame4.webp", width=300, caption="豪赤😋！！！")
         st.image("./image/murasame1.jpg",width=300,caption="啧，果然是小雑魚~" )
 
