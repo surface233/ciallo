@@ -201,7 +201,7 @@ if 0 < st.session_state.affection < 100:
     if st.session_state.current_step == 1:
         if st.session_state.fail == 2:
             # 先停止旧的song.mp3，再播放新的
-            stop_audio("./audio/song.mp3")
+            pause_all_audio()
             play_audio("./audio/song.mp3", custom_volume=0.1)
             st.session_state.fail = 1
         st.image("./image/murasame9.jpg", width=300, caption="狗修金又在看奇怪的网站了！")
