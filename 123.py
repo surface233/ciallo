@@ -366,7 +366,7 @@ elif st.session_state.affection == 100:
 
 
     st.image(
-        "./image/murasame8.jpg",width = 300, caption = "嘿嘿~狗修金~" )
+        "./image/murasame8.jpg",width = 300, caption = "嘿嘿~ 狗修金💗" )
     st.image("./image/ciallo.jpg", width=300, caption="原神牛逼💗💗💗")
 
 elif st.session_state.affection == 0:
