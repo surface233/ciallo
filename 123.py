@@ -345,8 +345,9 @@ elif st.session_state.affection == 100:
     st.title("你简直就是旮旯给木之神！")
     st.write("丛雨被你攻略了！请你吃丛雨丸😋")
     pause_all_audio()
+    st.image("./image/Murasame5.jpg", width=300, caption="嘿嘿，狗修金~")
     play_audio("./audio/Murasame3.mp3")
-    st.image("./image/Murasame5.jpg",width = 300, caption = "嘿嘿，狗修金~")
+
 
     if st.button("666还有第二关"):
         st.session_state.current_step = 1
