@@ -347,7 +347,8 @@ elif st.session_state.affection == 100:
     pause_all_audio()
     st.image(
         "./image/murasame8.jpg",width = 300, caption = "嘿嘿~ 狗修金💗" )
-    play_audio("./audio/Murasame3.mp3")
+    play_audio("./audio/Murasame5.mp3")
+    play_audio("./audio/song1.mp3")
 
 
 
