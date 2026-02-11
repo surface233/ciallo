@@ -341,14 +341,10 @@ if 0 < st.session_state.affection < 100:
             play_audio(f"./audio/ciallo{num}.mp3")
 
 elif st.session_state.affection == 100:
-    st.image(
-        "./image/Murasame8.jpg",
-        width=300,caption="嘿嘿~狗修金💗" )
     st.title("游戏胜利！")
     st.title("你简直就是旮旯给木之神！")
     st.write("丛雨被你攻略了！请你吃丛雨丸😋")
     pause_all_audio()
-
     play_audio("./audio/Murasame3.mp3")
 
 
@@ -369,7 +365,8 @@ elif st.session_state.affection == 100:
         st.rerun()
 
 
-
+    st.image(
+        "./image/Murasame8.jpg",width = 300, caption = "嘿嘿~狗修金" )
     st.image("./image/ciallo.jpg", width=300, caption="原神牛逼💗💗💗")
 
 elif st.session_state.affection == 0:
