@@ -250,7 +250,7 @@ if 0 < st.session_state.affection < 100:
             st.session_state.current_step = 1
             st.rerun()
         # 妥协摸头：好感度+5
-        elif st.button("幼刀是个纯小子，那只能摸头了😭😭😭"):
+        elif st.button("幼刀酱是个纯小子，那只能摸头了😭😭😭"):
             st.session_state.affection = min(st.session_state.affection + 5, 100)
             st.session_state.current_step = 2.1
             st.rerun()
