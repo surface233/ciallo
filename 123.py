@@ -345,7 +345,10 @@ elif st.session_state.affection == 100:
     st.title("你简直就是旮旯给木之神！")
     st.write("丛雨被你攻略了！请你吃丛雨丸😋")
     pause_all_audio()
+    st.image(
+        "./image/murasame8.jpg",width = 300, caption = "嘿嘿~ 狗修金💗" )
     play_audio("./audio/Murasame3.mp3")
+
 
 
     if st.button("666还有第二关"):
@@ -365,8 +368,7 @@ elif st.session_state.affection == 100:
         st.rerun()
 
 
-    st.image(
-        "./image/murasame8.jpg",width = 300, caption = "嘿嘿~ 狗修金💗" )
+
     st.image("./image/ciallo.jpg", width=300, caption="原神牛逼💗💗💗")
 
 elif st.session_state.affection == 0:
