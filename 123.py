@@ -74,20 +74,10 @@ def get_song_base64():
     with open(song_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-col1, _ = st.columns([5, 5])
-with col1:
-    if st.session_state.current_step1 == 1:
-        song_base64 = get_song_base64()
-        st.markdown("开始游戏吗？<br>(关音菩萨提醒您，前方记得调小音量)", unsafe_allow_html=True)
-        if st.button("《千恋万花》，启动！"):
-            st.session_state.current_step1 = 2
-            st.session_state.current_step = 1
-            # song.mp3 固定10%音量
-            st.session_state.fail = 2
-            st.rerun()
+
 
 # 提前生成song.mp3的Base64编码
-
+song_base64 = get_song_base64()
 # 初始化多音频播放/停止的JS
 components.html(f"""
 <script>
@@ -225,7 +215,17 @@ def pause_all_audio():
     """, height=0)
 
 # ========== 6. 完整游戏逻辑（新增好感度更新） ==========
+col1, _ = st.columns([5, 5])
+with col1:
+    if st.session_state.current_step1 == 1:
 
+        st.markdown("开始游戏吗？<br>(关音菩萨提醒您，前方记得调小音量)", unsafe_allow_html=True)
+        if st.button("《千恋万花》，启动！"):
+            st.session_state.current_step1 = 2
+            st.session_state.current_step = 1
+            # song.mp3 固定10%音量
+            st.session_state.fail = 2
+            st.rerun()
 
 # 步骤1：初始选择（新增好感度变化）
 if 0 < st.session_state.affection < 100:
