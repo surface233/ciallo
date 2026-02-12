@@ -65,6 +65,17 @@ def sound_to_base64(sound_path):
     with open(sound_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
+def get_song_base64():
+    """预处理song.mp3，转换为Base64编码（不存在则返回空字符串）"""
+    song_path = "./audio/song.mp3"
+    if not os.path.exists(song_path):
+        st.warning(f"⚠️ 音效文件未找到：{song_path}（可忽略，不影响游戏）")
+        return ""
+    with open(song_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+# 提前生成song.mp3的Base64编码
+song_base64 = get_song_base64()
 # 初始化多音频播放/停止的JS
 components.html(f"""
 <script>
