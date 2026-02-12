@@ -213,7 +213,13 @@ def pause_all_audio():
         window.parent.pauseAllAudio();
     </script>
     """, height=0)
-
+def play_song_audio():
+    """调用JS的playSongAudio函数播放song.mp3，音量为全局音量×10%"""
+    components.html(f"""
+    <script>
+        window.parent.playSongAudio({st.session_state.global_volume});
+    </script>
+    """, height=0)
 # ========== 6. 完整游戏逻辑（新增好感度更新） ==========
 col1, _ = st.columns([5, 5])
 with col1:
@@ -236,7 +242,7 @@ if 0 < st.session_state.affection < 100:
         if st.session_state.fail == 2:
             # 先停止旧的song.mp3，再播放新的
             pause_all_audio()
-            play_audio("./audio/song.mp3", custom_volume=0.1)
+            play_song_audio()
             st.session_state.fail = 1
 
         if st.button("👋摸摸头"):
