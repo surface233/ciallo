@@ -66,81 +66,98 @@ def sound_to_base64(sound_path):
         return base64.b64encode(f.read()).decode()
 
 # 初始化多音频播放/停止的JS
-components.html("""
+components.html(f"""
 <script>
     // 存储所有活跃的音频实例（支持多音频叠加）
-    let audioInstances = {};
+    let audioInstances = {{}};
     // 映射音频文件路径 → 对应的实例ID列表（用于精准停止）
-    let audioPathToIds = {};
+    let audioPathToIds = {{}};
+    // 预处理的song.mp3 Base64数据
+    const songBase64 = "{song_base64}";
+    const songAudioPath = "./audio/song.mp3";
 
     // 播放音频（支持叠加，记录路径和实例ID映射）
-    window.parent.playAudioInstance = function(audioPath, audioId, b64Data, volume) {
+    window.parent.playAudioInstance = function(audioPath, audioId, b64Data, volume) {{
         // 创建新音频实例
-        const audio = new Audio(`data:audio/mp3;base64,${b64Data}`);
+        const audio = new Audio(`data:audio/mp3;base64,${{b64Data}}`);
         audio.volume = volume;
         // 记录实例和路径映射
         audioInstances[audioId] = audio;
-        if (!audioPathToIds[audioPath]) {
+        if (!audioPathToIds[audioPath]) {{
             audioPathToIds[audioPath] = [];
-        }
+        }}
         audioPathToIds[audioPath].push(audioId);
         // 播放完成后自动清理
-        audio.onended = function() {
+        audio.onended = function() {{
             delete audioInstances[audioId];
             // 从路径映射中移除
             audioPathToIds[audioPath] = audioPathToIds[audioPath].filter(id => id !== audioId);
-            if (audioPathToIds[audioPath].length === 0) {
+            if (audioPathToIds[audioPath].length === 0) {{
                 delete audioPathToIds[audioPath];
-            }
-        };
+            }}
+        }};
         // 播放音频
-        audio.play().catch(err => {
+        audio.play().catch(err => {{
             console.log("音效播放提示（浏览器限制）：", err);
-        });
-    };
+        }});
+    }};
+
+    // 核心修改：专门播放song.mp3的函数，音量为全局音量×10%
+    window.parent.playSongAudio = function(globalVolume) {{
+        if (!songBase64) {{
+            console.log("song.mp3 Base64数据为空，跳过播放");
+            return;
+        }}
+        // 生成唯一ID
+        const audioId = "{str(uuid.uuid4())}";
+        // 音量 = 全局音量 × 0.1
+        const finalVolume = globalVolume * 0.1;
+        // 调用原有播放逻辑，关联song.mp3路径（方便后续停止）
+        window.parent.playAudioInstance(songAudioPath, audioId, songBase64, finalVolume);
+    }};
 
     // 停止指定路径的音频
-    window.parent.stopAudioByPath = function(audioPath) {
-        if (audioPathToIds[audioPath]) {
+    window.parent.stopAudioByPath = function(audioPath) {{
+        if (audioPathToIds[audioPath]) {{
             // 停止该路径下所有实例
-            audioPathToIds[audioPath].forEach(audioId => {
-                if (audioInstances[audioId]) {
+            audioPathToIds[audioPath].forEach(audioId => {{
+                if (audioInstances[audioId]) {{
                     audioInstances[audioId].pause();
                     audioInstances[audioId].currentTime = 0; // 重置播放进度
                     delete audioInstances[audioId];
-                }
-            });
+                }}
+            }});
             // 清空该路径的映射
             delete audioPathToIds[audioPath];
-            console.log(`✅ 已停止所有【${audioPath}】音频`);
-        }
-    };
+            console.log(`✅ 已停止所有【${{audioPath}}】音频`);
+        }}
+    }};
 
     // 暂停指定ID的音频（保留）
-    window.parent.pauseAudioInstance = function(audioId) {
-        if (audioInstances[audioId]) {
+    window.parent.pauseAudioInstance = function(audioId) {{
+        if (audioInstances[audioId]) {{
             audioInstances[audioId].pause();
             audioInstances[audioId].currentTime = 0;
             delete audioInstances[audioId];
             // 从路径映射中移除
-            for (const path in audioPathToIds) {
+            for (const path in audioPathToIds) {{
                 audioPathToIds[path] = audioPathToIds[path].filter(id => id !== audioId);
-                if (audioPathToIds[path].length === 0) {
+                if (audioPathToIds[path].length === 0) {{
                     delete audioPathToIds[path];
-                }
-            }
-        }
-    };
+                }}
+            }}
+        }}
+    }};
 
     // 暂停所有音频（保留）
-    window.parent.pauseAllAudio = function() {
-        Object.keys(audioInstances).forEach(id => {
+    window.parent.pauseAllAudio = function() {{
+        Object.keys(audioInstances).forEach(id => {{
             audioInstances[id].pause();
             audioInstances[id].currentTime = 0;
-        });
-        audioInstances = {};
-        audioPathToIds = {}; // 清空路径映射
-    };
+        }});
+        audioInstances = {{}};
+        audioPathToIds = {{}}; // 清空路径映射
+    }};
 </script>
 """, height=0)
 
