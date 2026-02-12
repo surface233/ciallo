@@ -65,112 +65,82 @@ def sound_to_base64(sound_path):
     with open(sound_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-def get_song_base64():
-    """预处理song.mp3，转换为Base64编码（不存在则返回空字符串）"""
-    song_path = "./audio/song.mp3"
-    if not os.path.exists(song_path):
-        st.warning(f"⚠️ 音效文件未找到：{song_path}（可忽略，不影响游戏）")
-        return ""
-    with open(song_path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-
-
-# 提前生成song.mp3的Base64编码
-song_base64 = get_song_base64()
 # 初始化多音频播放/停止的JS
-components.html(f"""
+components.html("""
 <script>
     // 存储所有活跃的音频实例（支持多音频叠加）
-    let audioInstances = {{}};
+    let audioInstances = {};
     // 映射音频文件路径 → 对应的实例ID列表（用于精准停止）
-    let audioPathToIds = {{}};
-    // 预处理的song.mp3 Base64数据
-    const songBase64 = "{song_base64}";
-    const songAudioPath = "./audio/song.mp3";
+    let audioPathToIds = {};
 
     // 播放音频（支持叠加，记录路径和实例ID映射）
-    window.parent.playAudioInstance = function(audioPath, audioId, b64Data, volume) {{
+    window.parent.playAudioInstance = function(audioPath, audioId, b64Data, volume) {
         // 创建新音频实例
-        const audio = new Audio(`data:audio/mp3;base64,${{b64Data}}`);
+        const audio = new Audio(`data:audio/mp3;base64,${b64Data}`);
         audio.volume = volume;
         // 记录实例和路径映射
         audioInstances[audioId] = audio;
-        if (!audioPathToIds[audioPath]) {{
+        if (!audioPathToIds[audioPath]) {
             audioPathToIds[audioPath] = [];
-        }}
+        }
         audioPathToIds[audioPath].push(audioId);
         // 播放完成后自动清理
-        audio.onended = function() {{
+        audio.onended = function() {
             delete audioInstances[audioId];
             // 从路径映射中移除
             audioPathToIds[audioPath] = audioPathToIds[audioPath].filter(id => id !== audioId);
-            if (audioPathToIds[audioPath].length === 0) {{
+            if (audioPathToIds[audioPath].length === 0) {
                 delete audioPathToIds[audioPath];
-            }}
-        }};
+            }
+        };
         // 播放音频
-        audio.play().catch(err => {{
+        audio.play().catch(err => {
             console.log("音效播放提示（浏览器限制）：", err);
-        }});
-    }};
-
-    // 核心修改：专门播放song.mp3的函数，音量为全局音量×10%
-    window.parent.playSongAudio = function(globalVolume) {{
-        if (!songBase64) {{
-            console.log("song.mp3 Base64数据为空，跳过播放");
-            return;
-        }}
-        // 生成唯一ID
-        const audioId = "{str(uuid.uuid4())}";
-        // 音量 = 全局音量 × 0.1
-        const finalVolume = globalVolume * 0.1;
-        // 调用原有播放逻辑，关联song.mp3路径（方便后续停止）
-        window.parent.playAudioInstance(songAudioPath, audioId, songBase64, finalVolume);
-    }};
+        });
+    };
 
     // 停止指定路径的音频
-    window.parent.stopAudioByPath = function(audioPath) {{
-        if (audioPathToIds[audioPath]) {{
+    window.parent.stopAudioByPath = function(audioPath) {
+        if (audioPathToIds[audioPath]) {
             // 停止该路径下所有实例
-            audioPathToIds[audioPath].forEach(audioId => {{
-                if (audioInstances[audioId]) {{
+            audioPathToIds[audioPath].forEach(audioId => {
+                if (audioInstances[audioId]) {
                     audioInstances[audioId].pause();
                     audioInstances[audioId].currentTime = 0; // 重置播放进度
                     delete audioInstances[audioId];
-                }}
-            }});
+                }
+            });
             // 清空该路径的映射
             delete audioPathToIds[audioPath];
-            console.log(`✅ 已停止所有【${{audioPath}}】音频`);
-        }}
-    }};
+            console.log(`✅ 已停止所有【${audioPath}】音频`);
+        }
+    };
 
     // 暂停指定ID的音频（保留）
-    window.parent.pauseAudioInstance = function(audioId) {{
-        if (audioInstances[audioId]) {{
+    window.parent.pauseAudioInstance = function(audioId) {
+        if (audioInstances[audioId]) {
             audioInstances[audioId].pause();
             audioInstances[audioId].currentTime = 0;
             delete audioInstances[audioId];
             // 从路径映射中移除
-            for (const path in audioPathToIds) {{
+            for (const path in audioPathToIds) {
                 audioPathToIds[path] = audioPathToIds[path].filter(id => id !== audioId);
-                if (audioPathToIds[path].length === 0) {{
+                if (audioPathToIds[path].length === 0) {
                     delete audioPathToIds[path];
-                }}
-            }}
-        }}
-    }};
+                }
+            }
+        }
+    };
 
     // 暂停所有音频（保留）
-    window.parent.pauseAllAudio = function() {{
-        Object.keys(audioInstances).forEach(id => {{
+    window.parent.pauseAllAudio = function() {
+        Object.keys(audioInstances).forEach(id => {
             audioInstances[id].pause();
             audioInstances[id].currentTime = 0;
-        }});
-        audioInstances = {{}};
-        audioPathToIds = {{}}; // 清空路径映射
-    }};
+        });
+        audioInstances = {};
+        audioPathToIds = {}; // 清空路径映射
+    };
 </script>
 """, height=0)
 
@@ -213,18 +183,11 @@ def pause_all_audio():
         window.parent.pauseAllAudio();
     </script>
     """, height=0)
-def play_song_audio():
-    """调用JS的playSongAudio函数播放song.mp3，音量为全局音量×10%"""
-    components.html(f"""
-    <script>
-        window.parent.playSongAudio({st.session_state.global_volume});
-    </script>
-    """, height=0)
+
 # ========== 6. 完整游戏逻辑（新增好感度更新） ==========
 col1, _ = st.columns([5, 5])
 with col1:
     if st.session_state.current_step1 == 1:
-
         st.markdown("开始游戏吗？<br>(关音菩萨提醒您，前方记得调小音量)", unsafe_allow_html=True)
         if st.button("《千恋万花》，启动！"):
             st.session_state.current_step1 = 2
@@ -242,7 +205,7 @@ if 0 < st.session_state.affection < 100:
         if st.session_state.fail == 2:
             # 先停止旧的song.mp3，再播放新的
             pause_all_audio()
-            play_song_audio()
+            play_audio("./audio/song.mp3", custom_volume=0.1)
             st.session_state.fail = 1
 
         if st.button("👋摸摸头"):
