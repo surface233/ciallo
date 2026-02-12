@@ -375,7 +375,7 @@ elif st.session_state.affection == 100:
 
 elif st.session_state.affection == 0:
     pause_all_audio()
-    play_audio("./audio/Murasame1.mp3")
+    play_audio("./audio/Murasame4.mp3")
     play_audio("./audio/man.mp3")
     st.title("丛雨吃掉了你的手指！")
     st.title("游戏结束！")
