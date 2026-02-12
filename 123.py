@@ -199,14 +199,14 @@ with col1:
 # 步骤1：初始选择（新增好感度变化）
 if 0 < st.session_state.affection < 100:
     if st.session_state.current_step == 1:
+        st.image("./image/murasame9.jpg", width=300, caption="狗修金又在看奇怪的网站了！")
+        st.write("这是一个丛雨，要摸头吗")
+        # 摸头：好感度+10（上限100）
         if st.session_state.fail == 2:
             # 先停止旧的song.mp3，再播放新的
             pause_all_audio()
             play_audio("./audio/song.mp3", custom_volume=0.1)
             st.session_state.fail = 1
-        st.image("./image/murasame9.jpg", width=300, caption="狗修金又在看奇怪的网站了！")
-        st.write("这是一个丛雨，要摸头吗")
-        # 摸头：好感度+10（上限100）
         if st.button("👋摸摸头"):
             st.session_state.affection = min(st.session_state.affection + 10, 100)
             st.session_state.current_step = 2.1
