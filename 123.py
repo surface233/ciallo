@@ -207,6 +207,7 @@ if 0 < st.session_state.affection < 100:
             pause_all_audio()
             play_audio("./audio/song.mp3", custom_volume=0.1)
             st.session_state.fail = 1
+
         if st.button("👋摸摸头"):
             st.session_state.affection = min(st.session_state.affection + 10, 100)
             st.session_state.current_step = 2.1
