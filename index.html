@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>丛雨·摸头好感度游戏</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(145deg, #2b1a1a 0%, #1f2b3a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .game-container {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(30, 20, 30, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 36px;
+            padding: 30px 25px;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.6);
+            border: 1px solid #a67c7c40;
+            color: #f0e6d2;
+        }
+        /* 好感度条 */
+        .affection-bar {
+            background: #3a2a2a;
+            height: 24px;
+            border-radius: 30px;
+            margin: 15px 0 25px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px #1a0f0f;
+            border: 1px solid #7a4f4f;
+        }
+        .affection-fill {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #f9a8a8, #ff6b6b, #d94141);
+            border-radius: 30px;
+            transition: width 0.2s ease;
+            box-shadow: 0 0 10px #ff7b7b;
+        }
+        .affection-text {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #ffcfcf;
+            font-weight: 500;
+        }
+        /* 图片区域 */
+        .image-area {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-area img {
+            max-width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 2px solid #a14f4f;
+            background: #2d1e1e;
+        }
+        .caption {
+            margin-top: 8px;
+            color: #d9b3b3;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0 15px;
+        }
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .game-btn {
+            background: #4d2f2f;
+            border: 2px solid #b36b6b;
+            color: #ffe3e3;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1 1 auto;
+            min-width: 160px;
+            box-shadow: 0 5px 0 #2d1b1b;
+        }
+        .game-btn:hover {
+            background: #6f4040;
+            border-color: #ff9494;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #2d1b1b;
+        }
+        .game-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #2d1b1b;
+        }
+        /* 大大的ciallo显示区 */
+        .ciallo-message {
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            color: #ffb7c5;
+            text-shadow: 0 0 20px #ff69b4, 0 0 40px #b43b6f;
+            letter-spacing: 6px;
+            margin: 10px 0 0;
+            line-height: 1.2;
+            word-break: break-word;
+            background: rgba(0,0,0,0.3);
+            border-radius: 60px;
+            padding: 15px 5px;
+            border: 2px dashed #ff9ecb;
+            display: none; /* 默认隐藏，点击后显示 */
+        }
+        .ciallo-message.show {
+            display: block;
+        }
+        /* 页脚 */
+        .footer {
+            margin-top: 35px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #b28b8b;
+            border-top: 1px solid #7f4f4f40;
+            padding-top: 18px;
+        }
+        .footer a {
+            color: #f5adad;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="gameApp">
+        <!-- 好感度条 -->
+        <div class="affection-text">好感度: <span id="affectionValue">50</span> / 100</div>
+        <div class="affection-bar">
+            <div class="affection-fill" id="affectionFill" style="width: 50%;"></div>
+        </div>
+
+        <!-- 大大的ciallo显示区（点击彩蛋按钮后出现） -->
+        <div id="cialloDisplay" class="ciallo-message">ciallo</div>
+
+        <!-- 图片与caption动态区域 -->
+        <div class="image-area" id="imageArea">
+            <img id="sceneImage" src="./image/ciallo.jpg" alt="scene">
+            <div id="imageCaption" class="caption">雑魚柚子厨~💗💗💗</div>
+        </div>
+
+        <!-- 按钮组（动态生成） -->
+        <div id="buttonPanel" class="button-group"></div>
+
+        <!-- 页脚（你指定的信息） -->
+        <div class="footer">
+            ⚡ 项目原作者：Guderians/Murasame · 改编：浮光掠影<br>
+            感谢所有贡献者 · 音频/图像素材归原版权方所有<br>
+            <span style="opacity:0.7;">—— 纯爱摸头模拟器 ——</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- 全局状态 ----------
+            let state = {
+                current_step: 0,          // 剧情步骤
+                current_step1: 1,
+                affection: 50,
+                fail: 1,
+                volume: 0.5
+            };
+
+            // 音频元素池（用Map管理，key为路径）
+            const audioMap = new Map();
+
+            // 当前正在播放的音频路径列表
+            let playingAudios = [];
+
+            // ---------- 音频控制函数（完全模拟原版）----------
+            function getAudioElement(src, customVolume = null) {
+                if (!audioMap.has(src)) {
+                    const audio = new Audio(src);
+                    audio.preload = 'auto';
+                    audio.loop = false;
+                    audio.volume = customVolume !== null ? customVolume : state.volume;
+                    audioMap.set(src, audio);
+                }
+                return audioMap.get(src);
+            }
+
+            function play_audio(src, custom_volume = null) {
+                const audio = getAudioElement(src, custom_volume);
+                // 如果正在播放，先暂停重置（保证同时只有一个实例在播放，但原版允许多个一起？我们简单处理：如果相同src正在播，就暂停重播）
+                audio.pause();
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('播放失败:', src, e));
+                if (!playingAudios.includes(src)) {
+                    playingAudios.push(src);
+                }
+            }
+
+            function stop_audio(src) {
+                if (audioMap.has(src)) {
+                    const audio = audioMap.get(src);
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+                playingAudios = playingAudios.filter(s => s !== src);
+            }
+
+            function pause_all_audio() {
+                playingAudios.forEach(src => {
+                    if (audioMap.has(src)) {
+                        audioMap.get(src).pause();
+                    }
+                });
+                playingAudios = [];
+            }
+
+            // 更新UI好感度
+            function updateAffectionUI() {
+                document.getElementById('affectionValue').innerText = state.affection;
+                const percent = Math.min(100, Math.max(0, state.affection)) + '%';
+                document.getElementById('affectionFill').style.width = percent;
+            }
+
+            // 显示大大的ciallo（持续3秒后隐藏）
+            function showBigCiallo() {
+                const cialloDiv = document.getElementById('cialloDisplay');
+                cialloDiv.classList.add('show');
+                setTimeout(() => {
+                    cialloDiv.classList.remove('show');
+                }, 2000);
+            }
+
+            // 渲染界面（根据当前step）
+            function render() {
+                const app = document.getElementById('gameApp');
+                const imageArea = document.getElementById('imageArea');
+                const imgEl = document.getElementById('sceneImage');
+                const captionEl = document.getElementById('imageCaption');
+                const buttonPanel = document.getElementById('buttonPanel');
+                buttonPanel.innerHTML = '';
+
+                // 好感度UI更新
+                updateAffectionUI();
+
+                // 特殊全局：Ciallo彩蛋按钮（在step1或current_step==1时显示）
+                // 但原版是在step==1或step1==1时额外显示一个图片+按钮，我们独立处理
+                // 先正常渲染主分支，再在最后加彩蛋按钮（保持风格一致）
+
+                // ========== 主分支逻辑 ==========
+                if (state.affection >= 100) {
+                    // 游戏胜利
+                    pause_all_audio();
+                    imgEl.src = './image/murasame8.jpg';
+                    captionEl.innerText = '嘿嘿~ 狗修金💗';
+                    play_audio('./audio/Murasame5.mp3');
+                    play_audio('./audio/song1.mp3');
+
+                    buttonPanel.innerHTML = `
+                        <div class="button-row">
+                            <button class="game-btn" id="winNextBtn">666还有第二关</button>
+                            <button class="game-btn" id="winExitBtn">退出游戏</button>
+                        </div>
+                    `;
+                    document.getElementById('winNextBtn')?.addEventListener('click', () => {
+                        state.current_step = 1;
+                        state.fail = 2;
+                        state.affection = 50;
+                        render();
+                    });
+                    document.getElementById('winExitBtn')?.addEventListener('click', () => {
+                        // 原版打开链接，我们改为显示ciallo
+                        showBigCiallo();
+                        state.current_step = 114514;
+                        state.affection = 78;
+                        render();
+                    });
+                }
+                else if (state.affection <= 0 || state.current_step === -1) {
+                    // 游戏结束
+                    pause_all_audio();
+                    play_audio('./audio/Murasame4.mp3');
+                    play_audio('./audio/man.mp3');
+                    imgEl.src = './image/murasame4.webp';
+                    captionEl.innerText = '豪赤😋！！！';
+                    buttonPanel.innerHTML = `
+                        <div class="button-row">
+                            <button class="game-btn" id="resetBtn">第三炸弹，败者食尘！</button>
+                            <button class="game-btn" id="gameExitBtn">退出游戏</button>
+                        </div>
+                    `;
+                    document.getElementById('resetBtn')?.addEventListener('click', () => {
+                        stop_audio('./audio/Murasame4.mp3');
+                        stop_audio('./audio/man.mp3');
+                        play_audio('./audio/song.mp3', 0.1);
+                        state.affection = 50;
+                        state.current_step = 1;
+                        state.fail = 2;
+                        render();
+                    });
+                    document.getElementById('gameExitBtn')?.addEventListener('click', () => {
+                        pause_all_audio();
+                        showBigCiallo();
+                        state.current_step = 114514;
+                        state.affection = 78;
+                        render();
+                    });
+                }
+                else if (state.current_step === 114514) {
+                    // 彩蛋被骗页面
+                    stop_audio('./audio/Murasame4.mp3');
+                    stop_audio('./audio/man.mp3');
+                    pause_all_audio();
+                    imgEl.src = './image/ciallo.jpg';
+                    captionEl.innerText = '你 被 骗 了 ! ! !';
+                    buttonPanel.innerHTML = `
+                        <div class="button-row">
+                            <button class="game-btn" id="backBtn">入口传送门</button>
+                        </div>
+                    `;
+                    document.getElementById('backBtn')?.addEventListener('click', () => {
+                        play_audio('./audio/lemon.mp3', 0.6);
+                        // 不改页面，只播放
+                    });
+                }
+                else {
+                    // 正常分支，根据current_step绘制
+                    if (state.current_step === 0) {
+                        // 初始状态，等同于step1？
+                        // 原版似乎step0是初始，但实际step1是开始。简单处理：置为step1
+                        state.current_step = 1;
+                    }
+
+                    // 根据不同的step渲染
+                    if (state.current_step === 1) {
+                        imgEl.src = './image/ciallo.jpg';
+                        captionEl.innerText = '雑魚柚子厨~💗💗💗';
+                        buttonPanel.innerHTML = `
+                            <div class="button-row">
+                                <button class="game-btn" id="step1_start">开始摸头</button>
+                            </div>
+                        `;
+                        document.getElementById('step1_start')?.addEventListener('click', () => {
+                            play_audio('./audio/song.mp3', 0.1);
+                            state.current_step = 2;
+                            state.fail = 1;
+                            render();
+                        });
+                    }
+                    else if (state.current_step === 2) {
+                        // 摸头选择
+                        imgEl.src = './image/murasame1.jpg';
+                        captionEl.innerText = '我去，摸头起手？你高低是个三千！';
+                        stop_audio('./audio/Murasame2.mp3');
+                        stop_audio('./audio/Murasame3.mp3');
+                        stop_audio('./audio/Murasame4.mp3');
+                        play_audio('./audio/Murasame1.mp3');
+                        buttonPanel.innerHTML = `
+                            <div class="button-row">
+                                <button class="game-btn" id="step2_continue">嘿嘿，幼刀酱~继续摸</button>
+                                <button class="game-btn" id="step2_stop">我好像踩到地雷了，寸止！</button>
+                            </div>
+                        `;
+                        document.getElementById('step2_continue')?.addEventListener('click', () => {
+                            state.affection = Math.min(state.affection + 8, 100);
+                            state.current_step = 3;
+                            render();
+                        });
+                        document.getElementById('step2_stop')?.addEventListener('click', () => {
+                            state.affection = Math.max(state.affection - 5, 0);
+                            state.current_step = 2.2;
+                            render();
+                        });
+                    }
+                    else if (state.current_step === 2.2) {
+                        imgEl.src = './image/murasame2.jpg';
+                        captionEl.innerText = '狗！修！金！！！';
+                        stop_audio('./audio/Murasame1.mp3');
+                        stop_audio('./audio/Murasame3.mp3');
+                        stop_audio('./audio/Murasame4.mp3');
+                        play_audio('./audio/Murasame2.mp3');
+                        buttonPanel.innerHTML = `
+                            <div class="button-row">
+                                <button class="game-btn" id="step22_back">吓我一跳,释放时间回溯忍术！</button>
+                                <button class="game-btn" id="step22_mo">幼刀酱是个纯小子，那只能摸头了😭😭😭</button>
+                                <button class="game-btn" id="step22_refuse">区区太平公主，我避她锋芒？</button>
+                                <button class="game-btn" id="step22_interact">666还有互动环节</button>
+                            </div>
+                        `;
+                        document.getElementById('step22_back')?.addEventListener('click', () => {
+                            state.affection = Math.max(state.affection - 10, 0);
+                            state.current_step = 1;
+                            render();
+                        });
+                        document.getElementById('step22_mo')?.addEventListener('click', () => {
+                            state.affection = Math.min(state.affection + 5, 100);
+                            state.current_step = 2.1;
+                            render();
+                        });
+                        document.getElementById('step22_refuse')?.addEventListener('click', () => {
+                            state.affection = Math.max(state.affection - 20, 0);
+                            state.current_step = -1;
+                            render();
+                        });
+                        document.getElementById('step22_interact')?.addEventListener('click', () => {
+                            // 原版打开B站，现在改为显示ciallo
+                            showBigCiallo();
+                            state.current_step = 114514;
+                            state.affection = 78;
+                            render();
+                        });
+                    }
+                    else if (state.current_step === 2.1) {
+                        imgEl.src = './image/murasame3.jpg';
+                        captionEl.innerText = '狗~修~金~💗';
+                        stop_audio('./audio/Murasame1.mp3');
+                        stop_audio('./audio/Murasame2.mp3');
+                        stop_audio('./audio/Murasame4.mp3');
+                        play_audio('./audio/Murasame3.mp3');
+                        buttonPanel.innerHTML = `
+                            <div class="button-row">
+                                <button class="game-btn" id="step21_infinite">无线摸头摸个爽！</button>
+                                <button class="game-btn" id="step21_stop">不摸了,她总不能是滑动变阻器吧</button>
+                            </div>
+                        `;
+                        document.getElementById('step21_infinite')?.addEventListener('click', () => {
+                            state.affection = Math.min(state.affection + 10, 100);
+                            state.current_step = 2.1;
+                            render();
+                        });
+                        document.getElementById('step21_stop')?.addEventListener('click', () => {
+                            state.affection = Math.max(state.affection - 10, 0);
+                            state.current_step = 2.2;
+                            render();
+                        });
+                    }
+                    else if (state.current_step === 3) {
+                        imgEl.src = './image/murasame3.jpg';
+                        captionEl.innerText = '狗~修~金~💗';
+                        stop_audio('./audio/Murasame1.mp3');
+                        stop_audio('./audio/Murasame2.mp3');
+                        stop_audio('./audio/Murasame4.mp3');
+                        play_audio('./audio/Murasame3.mp3');
+                        buttonPanel.innerHTML = `
+                            <div class="button-row">
+                                <button class="game-btn" id="step3_infinite">无线摸头摸个爽！</button>
+                                <button class="game-btn" id="step3_stop">不摸了,她总不能是滑动变阻器吧</button>
+                            </div>
+                        `;
+                        document.getElementById('step3_infinite')?.addEventListener('click', () => {
+                            state.affection = Math.min(state.affection + 10, 100);
+                            state.current_step = 2.1;
+                            render();
+                        });
+                        document.getElementById('step3_stop')?.addEventListener('click', () => {
+                            state.affection = Math.max(state.affection - 10, 0);
+                            state.current_step = 2.2;
+                            render();
+                        });
+                    }
+                    else {
+                        // 默认回step1
+                        state.current_step = 1;
+                        render();
+                        return;
+                    }
+                }
+
+                // 额外：Ciallo彩蛋按钮（原版在step==1或step1==1时额外显示）
+                // 我们简单在底部加一个独立的按钮（非分支，但保持趣味）
+                const extraCialloBtn = document.createElement('div');
+                extraCialloBtn.className = 'button-row';
+                extraCialloBtn.style.marginTop = '20px';
+                extraCialloBtn.innerHTML = '<button class="game-btn" id="cialloExtraBtn">点击Ciallo~ (∠・ω< )⌒★</button>';
+                buttonPanel.appendChild(extraCialloBtn);
+                document.getElementById('cialloExtraBtn')?.addEventListener('click', () => {
+                    const num = Math.floor(Math.random() * 6) + 1;
+                    play_audio(`./audio/ciallo${num}.mp3`);
+                });
+            }
+
+            // 初始化
+            window.addEventListener('load', () => {
+                // 预加载一些音频（可选）
+                render();
+            });
+        })();
+    </script>
+</body>
+</html>
