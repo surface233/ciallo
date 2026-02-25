@@ -49,7 +49,7 @@ ciallo～👋ヾ(=^▽^=)ノ
 
 ## 🙏 鸣谢
 
-- 原作：[Guderians/Murasame](https://github.com/Guderians/Murasame)  
+- 原作：[Guderisans/Murasame](https://github.com/Guderisans/Murasame)  
   感谢原作者的创意与 Python 实现，为这个项目打下基础。
 - 图像与音频素材版权归原游戏厂商 **柚子社（Yuzu-Soft）** 所有，本作仅供粉丝交流与学习使用。
 - 改编与前端重构：[浮光掠影](https://space.bilibili.com/178329117)
