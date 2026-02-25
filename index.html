@@ -467,7 +467,7 @@
                         play_audio('./audio/Murasame3.mp3');
                         buttonPanel.innerHTML = `
                             <div class="button-row">
-                                <button class="game-btn" id="step3_infinite">无线摸头摸个爽！</button>
+                                <button class="game-btn" id="step3_infinite">无限摸头摸个爽！</button>
                                 <button class="game-btn" id="step3_stop">不摸了,她总不能是滑动变阻器吧</button>
                             </div>
                         `;
@@ -495,7 +495,7 @@
                 const extraCialloBtn = document.createElement('div');
                 extraCialloBtn.className = 'button-row';
                 extraCialloBtn.style.marginTop = '20px';
-                extraCialloBtn.innerHTML = '<button class="game-btn" id="cialloExtraBtn">点击Ciallo~ (∠・ω< )⌒★</button>';
+                extraCialloBtn.innerHTML = '<button class="game-btn" id="cialloExtraBtn">Ciallo~ (∠・ω< )⌒★</button>';
                 buttonPanel.appendChild(extraCialloBtn);
                 document.getElementById('cialloExtraBtn')?.addEventListener('click', () => {
                     const num = Math.floor(Math.random() * 6) + 1;
