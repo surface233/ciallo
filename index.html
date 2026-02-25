@@ -210,7 +210,7 @@
 
             function play_audio(src, custom_volume = null) {
                 const audio = getAudioElement(src, custom_volume);
-                // 如果正在播放，先暂停重置（保证同时只有一个实例在播放，但原版允许多个一起？我们简单处理：如果相同src正在播，就暂停重播）
+                // 如果正在播放，先暂停重置（保证同时只有一个实例在播放，如果相同src正在播，就暂停重播）
                 audio.pause();
                 audio.currentTime = 0;
                 audio.play().catch(e => console.log('播放失败:', src, e));
@@ -291,7 +291,7 @@
                         render();
                     });
                     document.getElementById('winExitBtn')?.addEventListener('click', () => {
-                        // 原版打开链接，我们改为显示ciallo
+                        // 原版打开链接，改为显示ciallo
                         showBigCiallo();
                         state.current_step = 114514;
                         state.affection = 78;
@@ -337,7 +337,7 @@
                     captionEl.innerText = '你 被 骗 了 ! ! !';
                     buttonPanel.innerHTML = `
                         <div class="button-row">
-                            <button class="game-btn" id="backBtn">入口传送门</button>
+                            <button class="game-btn" id="backBtn">战败BGM</button>
                         </div>
                     `;
                     document.getElementById('backBtn')?.addEventListener('click', () => {
@@ -441,7 +441,7 @@
                         play_audio('./audio/Murasame3.mp3');
                         buttonPanel.innerHTML = `
                             <div class="button-row">
-                                <button class="game-btn" id="step21_infinite">无线摸头摸个爽！</button>
+                                <button class="game-btn" id="step21_infinite">无限摸头摸个爽！</button>
                                 <button class="game-btn" id="step21_stop">不摸了,她总不能是滑动变阻器吧</button>
                             </div>
                         `;
